@@ -8,7 +8,7 @@ header('Content-type: image/svg+xml');
 header('Content-Disposition: inline; filename="' . basename(__FILE__, '.php') . '"');
 
 $req = array();
-$defaults = array('icon', 'avatar', 'nofill', 'guides');
+$defaults = array('icon', 'avatar', 'nofill', 'guides', 'solid');
 foreach ($defaults as $value)
 	$req[$value] = false;
 foreach ($_REQUEST as $key => $value)
@@ -16,6 +16,8 @@ foreach ($_REQUEST as $key => $value)
 		$req[$key] = ($value == '') ? true : filter_var($value, FILTER_VALIDATE_BOOLEAN);
 extract($req);
 
+$fill = false;
+$color = false;
 if (isset($_REQUEST['fill'])) {
 	$fill = true;
 	if ($_REQUEST['fill'] == '') {
@@ -23,8 +25,14 @@ if (isset($_REQUEST['fill'])) {
 	} else {
 		$color = '#' . str_replace(array(' ', '#'), '', $_REQUEST['fill']);
 	}
-} else {
-	$fill = false;
+} else if (isset($_REQUEST['fills'])) {
+	$fill = true;
+	$solid = true;
+	if ($_REQUEST['fills'] == '') {
+		$color = '#000';
+	} else {
+		$color = '#' . str_replace(array(' ', '#'), '', $_REQUEST['fills']);
+	}
 }
 
 
@@ -146,6 +154,24 @@ function side_l($w, $h, $s) {
 	return $out;
 }
 
+function f($cs1, $cs2, $gg1, $gg2, $cst, $sld) {
+	if ($sld) {
+		if ($cst) {
+			return $cs2;
+		} else {
+			return $cs1;
+		}
+	} else {
+		if ($cst) {
+			return 'url(#' . $gg2 . ')';
+		} else {
+			return 'url(#' . $gg1 . ')';
+		}
+
+	}
+	return '#000';
+}
+
 if ($icon) {
 	$width = $w;
 } elseif ($avatar) {
@@ -163,14 +189,14 @@ if ($avatar) {
 
 ?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="<?= $width ?>" height="<?= $height ?>" viewBox="0 0 <?= $width ?> <?= $height ?>">
 
-	<?php if ($fill) { ?>
+	<?php if ($fill && !$solid) { ?>
 	<defs>
 		<linearGradient id="grad-fill" x1="0%" y1="0%" x2="100%" y2="0%">
-			<stop offset="0%" style="stop-color: <?= brighten($color, 0.33) ?>; stop-opacity: 1" />
-			<stop offset="100%" style="stop-color: <?= brighten($color, -0.33) ?>; stop-opacity: 1" />
+			<stop offset="0%" style="stop-color: <?= brighten($color, 0.25) ?>; stop-opacity: 1" />
+			<stop offset="100%" style="stop-color: <?= brighten($color, -0.25) ?>; stop-opacity: 1" />
 		</linearGradient>
 	</defs>
-	<?php } elseif (!$nofill) { ?>
+	<?php } elseif (!$nofill && !$solid) { ?>
 	<defs>
 		<linearGradient id="grad-red" x1="0%" y1="0%" x2="100%" y2="0%">
 			<stop offset="0%" style="stop-color: <?= brighten('#f00', 0.33) ?>; stop-opacity: 1" />
@@ -202,15 +228,15 @@ if ($avatar) {
 	<g id="filler">
 		<g id="filler-top">
 			<title>Top-Frame</title>
-			<polygon stroke="red" id="poly-ft" style="stroke-width: 1; fill: url(#<?= $fill ? 'grad-fill' : 'grad-red' ?>); stroke-linejoin: round; stroke-linecap: round;" points="<?= side_t($w, $h, $s) ?>"/>
+			<polygon stroke="red" id="poly-ft" style="stroke-width: 1; fill: <?= f('red', $color, 'grad-red', 'grad-fill', $fill, $solid) ?>; stroke-linejoin: round; stroke-linecap: round;" points="<?= side_t($w, $h, $s) ?>"/>
 		</g>
 		<g id="filler-right">
 			<title>Right-Frame</title>
-			<polygon stroke="blue" id="poly-fr" style="stroke-width: 1; fill: url(#<?= $fill ? 'grad-fill' : 'grad-blue' ?>); stroke-linejoin: round; stroke-linecap: round;" points="<?= side_r($w, $h, $s) ?>"/>
+			<polygon stroke="blue" id="poly-fr" style="stroke-width: 1; fill: <?= f('blue', $color, 'grad-blue', 'grad-fill', $fill, $solid) ?>; stroke-linejoin: round; stroke-linecap: round;" points="<?= side_r($w, $h, $s) ?>"/>
 		</g>
 		<g id="filler-left">
 				<title>Left-Frame</title>
-			<polygon stroke="green" id="poly-fl" style="stroke-width: 1; fill: url(#<?= $fill ? 'grad-fill' : 'grad-green' ?>); stroke-linejoin: round; stroke-linecap: round;" points="<?= side_l($w, $h, $s) ?>"/>
+			<polygon stroke="green" id="poly-fl" style="stroke-width: 1; fill: <?= f('green', $color, 'grad-green', 'grad-fill', $fill, $solid) ?>; stroke-linejoin: round; stroke-linecap: round;" points="<?= side_l($w, $h, $s) ?>"/>
 		</g>
 	</g>
 	<?php } ?>

@@ -10,9 +10,10 @@
 	<style>
 		body {
 			margin: 100px;
+			background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAABlBMVEX1YmIAAACS5SrAAAAAAnRSTlMaAMa+N+MAAAAPSURBVAjXY2D4jxXhEgYAfr8P8QhChVEAAAAASUVORK5CYII=");
 		}
 		img {
-			border: 10px solid rgba(0,0,0,0.2);
+			border: 10px dashed rgba(0,0,127,0.1);
 			height: 128px;
 			width: auto;
 		}
@@ -47,8 +48,16 @@
 				<figcaption>nofill</figcaption>
 			</figure>
 			<figure>
-				<img src="logo.svg.php?icon&fill=777">
-				<figcaption>fill=#777</figcaption>
+				<img src="logo.svg.php?icon&solid">
+				<figcaption>solid</figcaption>
+			</figure>
+			<figure>
+				<img src="logo.svg.php?icon&fill=058">
+				<figcaption>fill=#058</figcaption>
+			</figure>
+			<figure>
+				<img src="logo.svg.php?icon&fills=058">
+				<figcaption>fills=#058</figcaption>
 			</figure>
 		</td>
 	</tr>
