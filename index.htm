@@ -23,6 +23,9 @@
 		figcaption {
 			text-align: center;
 		}
+		.inv {
+			background-color: rgba(0,0,0,0.75);
+		}
 	</style>
 </head>
 <body>
@@ -30,7 +33,7 @@
 <table>
 	<tr>
 		<td><i>(default)</i></td>
-		<td><img src="logo.svg.php"></td>
+		<td><img src="logo.svg.php?size=4096"></td>
 	</tr>
 	<tr>
 		<td><i>nofill</i></td>
@@ -40,7 +43,7 @@
 		<td><i>icon</i></td>
 		<td>
 			<figure>
-				<img src="logo.svg.php?icon">
+				<img src="logo.svg.php?icon&size=4096">
 				<figcaption><i>(default)</i></figcaption>
 			</figure>
 			<figure>
@@ -58,6 +61,10 @@
 			<figure>
 				<img src="logo.svg.php?icon&fills=058">
 				<figcaption>fills=#058</figcaption>
+			</figure>
+			<figure>
+				<img src="logo.svg.php?icon&nofill&inv" class="inv">
+				<figcaption>nofill & inv</figcaption>
 			</figure>
 		</td>
 	</tr>
