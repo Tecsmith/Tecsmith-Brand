@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+	<defs>
+		<linearGradient id="grad-red" x1="0%" y1="0%" x2="100%" y2="0%">
+			<stop offset="0%" style="stop-color: #fb0000; stop-opacity: 1" />
+			<stop offset="100%" style="stop-color: #8c0000; stop-opacity: 1" />
+		</linearGradient>
+		<linearGradient id="grad-green" x1="0%" y1="0%" x2="100%" y2="0%">
+			<stop offset="0%" style="stop-color: #00fb00; stop-opacity: 1" />
+			<stop offset="100%" style="stop-color: #008c00; stop-opacity: 1" />
+		</linearGradient>
+		<linearGradient id="grad-blue" x1="0%" y1="0%" x2="100%" y2="0%">
+			<stop offset="0%" style="stop-color: #0000fb; stop-opacity: 1" />
+			<stop offset="100%" style="stop-color: #00008c; stop-opacity: 1" />
+		</linearGradient>
+	</defs>
+	<polygon stroke="#000" id="poly-ft" style="stroke-width: 41; fill: url(#grad-red); stroke-linejoin: round; stroke-linecap: round;" points="512 45 942 260 512 475 82 260 512 45"/>
+	<polygon stroke="#000" id="poly-fr" style="stroke-width: 41; fill: url(#grad-blue); stroke-linejoin: round; stroke-linecap: round;" points="553 549 983 334 983 764 553 979 553 549"/>
+	<polygon stroke="#000" id="poly-fl" style="stroke-width: 41; fill: url(#grad-green); stroke-linejoin: round; stroke-linecap: round;" points="471 549 41 334 41 764 471 979 471 549"/>
+</svg>

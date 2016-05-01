@@ -62,12 +62,14 @@ foreach ($_REQUEST as $key => $value)
 		$req[$key] = ($value == '') ? true : filter_var($value, FILTER_VALIDATE_BOOLEAN);
 extract($req);
 
-$black = '#000';  if ($inv) $black = invert($black);
 
+// primary colors
+$black = '#000';
 $red = '#c30000';
 $green = '#00c300';
 $blue = '#0000c3';
 
+// gradients
 $red_fr = '#fb0000';
 $red_to = '#8c0000';
 $green_fr = '#00fb00';
@@ -75,25 +77,26 @@ $green_to = '#008c00';
 $blue_fr = '#0000fb';
 $blue_to = '#00008c';
 
-$red_alt = '#f03b4d';
-$black_alt = '#565656';
+// more color
+$red_alt = '#f03b4d';  // "tec"
+$black_alt = '#565656';  // "smith"
 
 $fill = false;
-$color = false;
+$clr_fil = false;
 if (isset($_REQUEST['fill'])) {
 	$fill = true;
 	if ($_REQUEST['fill'] == '') {
-		$color = '#000';
+		$clr_fil = '#000';
 	} else {
-		$color = '#' . str_replace(array(' ', '#'), '', $_REQUEST['fill']);
+		$clr_fil = '#' . str_replace(array(' ', '#'), '', $_REQUEST['fill']);
 	}
 } else if (isset($_REQUEST['fills'])) {
 	$fill = true;
 	$solid = true;
 	if ($_REQUEST['fills'] == '') {
-		$color = '#000';
+		$clr_fil = '#000';
 	} else {
-		$color = '#' . str_replace(array(' ', '#'), '', $_REQUEST['fills']);
+		$clr_fil = '#' . str_replace(array(' ', '#'), '', $_REQUEST['fills']);
 	}
 }
 
@@ -198,24 +201,7 @@ function side_l($w, $h, $s) {
 	return $out;
 }
 
-function f($cs1, $cs2, $gg1, $gg2, $cst, $sld) {
-	if ($sld) {
-		if ($cst) {
-			return $cs2;
-		} else {
-			return $cs1;
-		}
-	} else {
-		if ($cst) {
-			return 'url(#' . $gg2 . ')';
-		} else {
-			return 'url(#' . $gg1 . ')';
-		}
-
-	}
-	return '#000';
-}
-
+// figure out dimentions
 if ($icon) {
 	$width = $w;
 } elseif ($avatar) {
@@ -231,16 +217,34 @@ if ($avatar) {
 	$height = $h;
 }
 
-?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="<?= $width ?>" height="<?= $height ?>" viewBox="0 0 <?= $width ?> <?= $height ?>">
+// figure out colors
+if ($inv) $black = invert($black);
+if ($nofill) {
+	$red = $green = $blue = 'none';
+} else if ($solid) {
+	if ($fill) $red = $green = $blue = $clr_fil;
+} else {
+	if ($fill) $red = $green = $blue = 'url(#grad-fill)';
+	else {
+		$red = 'url(#grad-red)';
+		$green = 'url(#grad-green)';
+		$blue = 'url(#grad-blue)';
+	}
+}
+if ($fill) $black = brighten($clr_fil, -0.10);
 
-	<?php if ($fill && !$solid) { ?>
+
+
+// now the SVG
+?><svg xmlns="http://www.w3.org/2000/svg" width="<?= $width ?>" height="<?= $height ?>" viewBox="0 0 <?= $width ?> <?= $height ?>">
+<?php if ($fill && !$solid) { ?>
 	<defs>
 		<linearGradient id="grad-fill" x1="0%" y1="0%" x2="100%" y2="0%">
-			<stop offset="0%" style="stop-color: <?= brighten($color, 0.25) ?>; stop-opacity: 1" />
-			<stop offset="100%" style="stop-color: <?= brighten($color, -0.25) ?>; stop-opacity: 1" />
+			<stop offset="0%" style="stop-color: <?= brighten($clr_fil, 0.20) ?>; stop-opacity: 1" />
+			<stop offset="100%" style="stop-color: <?= brighten($clr_fil, -0.20) ?>; stop-opacity: 1" />
 		</linearGradient>
 	</defs>
-	<?php } elseif (!$nofill && !$solid) { ?>
+<?php } elseif (!$nofill && !$solid) { ?>
 	<defs>
 		<linearGradient id="grad-red" x1="0%" y1="0%" x2="100%" y2="0%">
 			<stop offset="0%" style="stop-color: <?= $red_fr ?>; stop-opacity: 1" />
@@ -255,68 +259,48 @@ if ($avatar) {
 			<stop offset="100%" style="stop-color: <?= $blue_to ?>; stop-opacity: 1" />
 		</linearGradient>
 	</defs>
-	<?php } ?>
-
+<?php } ?>
+<?php if (false) {  // not needed ?>
 	<g id="background">
 		<title>Background</title>
 		<rect id="svgEditorBackground" x="0" y="0" width="<?= $w ?>" height="<?= $h ?>" style="fill: none; stroke: none;"/>
 	</g>
-
-	<?php if ($guides) { ?>
+<?php } ?>
+<?php if ($guides) { ?>
 	<g id="guides1">
 		<circle cx="<?= $w/2 ?>" cy="<?= $h/2 ?>" r="<?= $w/2 ?>" fill="rgba(255,0,0,0.1)" />
 	</g>
-	<?php } ?>
-
-	<?php if (!$nofill) { ?>
-	<g id="filler">
-		<g id="filler-top">
-			<title>Top-Frame</title>
-			<polygon stroke="<?= $red ?>" id="poly-ft" style="stroke-width: 1; fill: <?= f($red, $color, 'grad-red', 'grad-fill', $fill, $solid) ?>; stroke-linejoin: round; stroke-linecap: round;" points="<?= side_t($w, $h, $s) ?>"/>
-		</g>
-		<g id="filler-right">
-			<title>Right-Frame</title>
-			<polygon stroke="<?= $blue ?>" id="poly-fr" style="stroke-width: 1; fill: <?= f($blue, $color, 'grad-blue', 'grad-fill', $fill, $solid) ?>; stroke-linejoin: round; stroke-linecap: round;" points="<?= side_r($w, $h, $s) ?>"/>
-		</g>
-		<g id="filler-left">
-				<title>Left-Frame</title>
-			<polygon stroke="<?= $green ?>" id="poly-fl" style="stroke-width: 1; fill: <?= f($green, $color, 'grad-green', 'grad-fill', $fill, $solid) ?>; stroke-linejoin: round; stroke-linecap: round;" points="<?= side_l($w, $h, $s) ?>"/>
-		</g>
-	</g>
-	<?php } ?>
-
+<?php } ?>
 	<g id="frame">
 		<g id="frame-top">
 			<title>Top-Frame</title>
-			<polygon stroke="<?= $black ?>" id="poly-ft" style="stroke-width: <?= $s ?>; fill: none; stroke-linejoin: round; stroke-linecap: round;" points="<?= side_t($w, $h, $s) ?>"/>
+			<polygon stroke="<?= $black ?>" id="poly-ft" style="stroke-width: <?= $s ?>; fill: <?= $red ?>; stroke-linejoin: round; stroke-linecap: round;" points="<?= side_t($w, $h, $s) ?>"/>
 		</g>
 		<g id="frame-right">
 			<title>Right-Frame</title>
-			<polygon stroke="<?= $black ?>" id="poly-fr" style="stroke-width: <?= $s ?>; fill: none; stroke-linejoin: round; stroke-linecap: round;" points="<?= side_r($w, $h, $s) ?>"/>
+			<polygon stroke="<?= $black ?>" id="poly-fr" style="stroke-width: <?= $s ?>; fill: <?= $blue ?>; stroke-linejoin: round; stroke-linecap: round;" points="<?= side_r($w, $h, $s) ?>"/>
 		</g>
 		<g id="frame-left">
 			<title>Left-Frame</title>
-			<polygon stroke="<?= $black ?>" id="poly-fl" style="stroke-width: <?= $s ?>; fill: none; stroke-linejoin: round; stroke-linecap: round;" points="<?= side_l($w, $h, $s) ?>"/>
+			<polygon stroke="<?= $black ?>" id="poly-fl" style="stroke-width: <?= $s ?>; fill: <?= $green ?>; stroke-linejoin: round; stroke-linecap: round;" points="<?= side_l($w, $h, $s) ?>"/>
 		</g>
 	</g>
-
-	<?php if (!$icon && !$avatar) { ?>
-		<g id="word">
-		<?php if (!$nofill) { ?>
-			<text x="<?= $w + ($w / 6) ?>" y="<?= round($h * 0.9) ?>" fill="<?= $red_alt ?>" font-size="<?= round($h * 1.1) ?>" stroke="<?= $red_alt ?>" stroke-width="<?= round($s / 2) ?>" font-family="Ubuntu" font-weight="bold">tec<tspan fill="<?= $black_alt ?>" stroke="<?= $black_alt ?>">smith</tspan></text>
-		<?php } else { ?>
-			<text x="<?= $w + ($w / 6) ?>" y="<?= round($h * 0.9) ?>" fill="none" stroke="<?= $black ?>" stroke-width="<?= $s ?>" font-size="<?= round($h * 1.1) ?>" font-family="Ubuntu" font-weight="bold">tecsmith</text>
-		<?php }  // $nofill ?>
-		</g>
-	<?php } elseif ($avatar) { ?>
-		<g id="word">
-			<text x="<?= $s ?>" y="<?= round($h * 1.35) ?>" fill="<?= $red_alt ?>" font-size="<?= round($h * 0.34) ?>" font-family="Ubuntu" font-weight="bold">tec<tspan fill="<?= $black_alt ?>">smith</tspan></text>
-		</g>
-	<?php }  ?>
-
-	<?php if ($guides) { ?>
+<?php if (!$icon && !$avatar) { ?>
+	<g id="word">
+<?php if (!$nofill) { ?>
+		<text x="<?= round($w + ($w / 6)) ?>" y="<?= round($h * 0.9) ?>" fill="<?= $red_alt ?>" font-size="<?= round($h * 1.1) ?>" stroke="<?= $red_alt ?>" stroke-width="<?= round($s / 2) ?>" font-family="Ubuntu" font-weight="bold">tec<tspan fill="<?= $black_alt ?>" stroke="<?= $black_alt ?>" stroke-width="<?= round($s / 2) ?>">smith</tspan></text>
+<?php } else { ?>
+		<text x="<?= round($w + ($w / 6)) ?>" y="<?= round($h * 0.9) ?>" fill="none" stroke="<?= $black ?>" stroke-width="<?= $s ?>" font-size="<?= round($h * 1.1) ?>" font-family="Ubuntu" font-weight="bold">tecsmith</text>
+<?php }  // $nofill ?>
+	</g>
+<?php } elseif ($avatar) { ?>
+	<g id="word">
+		<text x="<?= $s ?>" y="<?= round($h * 1.35) ?>" fill="<?= $red_alt ?>" font-size="<?= round($h * 0.34) ?>" font-family="Ubuntu" font-weight="bold">tec<tspan fill="<?= $black_alt ?>">smith</tspan></text>
+	</g>
+<?php }  ?>
+<?php if ($guides) { ?>
 	<g id="guides2">
 		<circle cx="<?= $w/2 ?>" cy="<?= $h/2 ?>" r="<?= $s ?>" fill="rgba(0,0,0,0.33)" />
 	</g>
-	<?php } ?>
+<?php } ?>
 </svg>

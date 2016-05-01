@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="1536" viewBox="0 0 1536 1536">
+	<defs>
+		<linearGradient id="grad-red" x1="0%" y1="0%" x2="100%" y2="0%">
+			<stop offset="0%" style="stop-color: #fb0000; stop-opacity: 1" />
+			<stop offset="100%" style="stop-color: #8c0000; stop-opacity: 1" />
+		</linearGradient>
+		<linearGradient id="grad-green" x1="0%" y1="0%" x2="100%" y2="0%">
+			<stop offset="0%" style="stop-color: #00fb00; stop-opacity: 1" />
+			<stop offset="100%" style="stop-color: #008c00; stop-opacity: 1" />
+		</linearGradient>
+		<linearGradient id="grad-blue" x1="0%" y1="0%" x2="100%" y2="0%">
+			<stop offset="0%" style="stop-color: #0000fb; stop-opacity: 1" />
+			<stop offset="100%" style="stop-color: #00008c; stop-opacity: 1" />
+		</linearGradient>
+	</defs>
+	<polygon stroke="#000" id="poly-ft" style="stroke-width: 41; fill: url(#grad-red); stroke-linejoin: round; stroke-linecap: round;" points="768 147.4 1198 362.4 768 577.4 338 362.4 768 147.4"/>
+	<polygon stroke="#000" id="poly-fr" style="stroke-width: 41; fill: url(#grad-blue); stroke-linejoin: round; stroke-linecap: round;" points="809 651.4 1239 436.4 1239 866.4 809 1081.4 809 651.4"/>
+	<polygon stroke="#000" id="poly-fl" style="stroke-width: 41; fill: url(#grad-green); stroke-linejoin: round; stroke-linecap: round;" points="727 651.4 297 436.4 297 866.4 727 1081.4 727 651.4"/>
+	<text x="41" y="1382" fill="#f03b4d" font-size="348" font-family="Ubuntu" font-weight="bold">tec<tspan fill="#565656">smith</tspan></text>
+</svg>
