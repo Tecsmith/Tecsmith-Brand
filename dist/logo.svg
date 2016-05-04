@@ -1,20 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="5878" height="1024" viewBox="0 0 5878 1024">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="5878" height="1024">
 	<defs>
-		<linearGradient id="grad-red" x1="0%" y1="0%" x2="100%" y2="0%">
-			<stop offset="0%" style="stop-color: #fb0000; stop-opacity: 1" />
-			<stop offset="100%" style="stop-color: #8c0000; stop-opacity: 1" />
+		<linearGradient id="grad-red" x1="0%" y1="0%" x2="100%" y2="50%">
+			<stop offset="0%" style="stop-color: #fb0000; stop-opacity: 0.8" />
+			<stop offset="100%" style="stop-color: #8c0000; stop-opacity: 0.8" />
 		</linearGradient>
-		<linearGradient id="grad-green" x1="0%" y1="0%" x2="100%" y2="0%">
-			<stop offset="0%" style="stop-color: #00fb00; stop-opacity: 1" />
-			<stop offset="100%" style="stop-color: #008c00; stop-opacity: 1" />
+		<linearGradient id="grad-green" x1="0%" y1="0%" x2="100%" y2="50%">
+			<stop offset="0%" style="stop-color: #00fb00; stop-opacity: 0.8" />
+			<stop offset="100%" style="stop-color: #008c00; stop-opacity: 0.8" />
 		</linearGradient>
-		<linearGradient id="grad-blue" x1="0%" y1="0%" x2="100%" y2="0%">
-			<stop offset="0%" style="stop-color: #0000fb; stop-opacity: 1" />
-			<stop offset="100%" style="stop-color: #00008c; stop-opacity: 1" />
+		<linearGradient id="grad-blue" x1="0%" y1="0%" x2="100%" y2="50%">
+			<stop offset="0%" style="stop-color: #0000fb; stop-opacity: 0.8" />
+			<stop offset="100%" style="stop-color: #00008c; stop-opacity: 0.8" />
 		</linearGradient>
 	</defs>
-	<polygon stroke="#000" id="poly-ft" style="stroke-width: 41; fill: url(#grad-red); stroke-linejoin: round; stroke-linecap: round;" points="512 45 942 260 512 475 82 260 512 45"/>
-	<polygon stroke="#000" id="poly-fr" style="stroke-width: 41; fill: url(#grad-blue); stroke-linejoin: round; stroke-linecap: round;" points="553 549 983 334 983 764 553 979 553 549"/>
-	<polygon stroke="#000" id="poly-fl" style="stroke-width: 41; fill: url(#grad-green); stroke-linejoin: round; stroke-linecap: round;" points="471 549 41 334 41 764 471 979 471 549"/>
-	<text x="1195" y="922" fill="#f03b4d" font-size="1126" stroke="#f03b4d" stroke-width="21" font-family="Ubuntu" font-weight="bold">tec<tspan fill="#565656" stroke="#565656" stroke-width="21">smith</tspan></text>
+	<path stroke="#000" stroke-width="36" fill="url(#grad-red)" d="M 553 444.6208 L 1000.2832 224.8704 L 553 21.1968 L 105.7168 224.8704 Z" stroke-linecap="round" stroke-linejoin="round" />
+	<path stroke="#000" stroke-width="36" fill="url(#grad-green)" d="M 516.0336 509.44 L 60.8656 280.6784 L 108.7888 744.8576 L 519.6176 1001.2672 Z" stroke-linecap="round" stroke-linejoin="round" />
+	<path stroke="#000" stroke-width="36" fill="url(#grad-blue)" d="M 589.9664 509.44 L 1045.1344 280.6784 L 997.2112 744.8576 L 586.3824 1001.2672 Z" stroke-linecap="round" stroke-linejoin="round" />
+	<text x="3533" y="942.08" text-anchor="middle" fill="#f03b4d" fill-opacity="1" stroke="#f03b4d" stroke-width="18" stroke-opacity="1" font-size="1126" font-family="Ubuntu" font-weight="bold">tec<tspan fill="#565656" stroke="#565656" stroke-width="18">smith</tspan></text>
 </svg>
