@@ -14,6 +14,9 @@ define('GEN_AVATAR', 2);
 // globals
 global $dim, $stroke_width, $offset_x, $offset_y;
 
+$name = false;
+if (isset($_REQUEST['name']) && ($_REQUEST['name'] != '')) $name = $_REQUEST['name'];
+
 $dim = false;
 if (isset($_REQUEST['size']) && ($_REQUEST['size'] != '')) $dim = round($_REQUEST['size']);
 if (!$dim) $dim = 1024;
@@ -103,6 +106,16 @@ function brighter($hex, $percent) {
 	return $hash . $new_hex;
 }
 
+function to_color($color) {
+	$color = str_replace(array(' ', '#'), '', $color);
+	if (ctype_xdigit($color)) {
+		$l = strlen($color);
+		if (($l == 3) || ($l == 6)) $color = '#' . $color;
+		else $color = false;
+	}
+	return $color;
+}
+
 function pth($co_ords, $stroke, $s_width, $fill) {
 	global  $offset_x, $offset_y;
 	$out = T . '<path stroke="' . $stroke . '" stroke-width="' . $s_width .
@@ -122,6 +135,19 @@ function lgr($name, $s_color, $e_color, $opacity = 1) {
 	$out .= T.T.T.'<stop offset="100%" style="stop-color: '.$e_color.'; stop-opacity: '.$opacity.'" />'.N;
 	$out .= T.T. '</linearGradient>'.N;
 	return $out;
+}
+
+/* ----- Additional PHP function ------------------------------------------ */
+function in_string($needle, $haystack, $caseinsensitive = false) {
+	if (!is_array($needle)) {  $s = $needle;  $needle = array();  $needle[] = $s;  }
+	foreach ($needle as $s) {
+		if (!$caseinsensitive) {
+			if (strpos($haystack, $s) !== false) return true;
+		} else {
+			if (stripos($haystack, $s) !== false) return true;
+		}
+	}
+	return false;
 }
 
 /* ======================================================================== */
@@ -144,7 +170,7 @@ if (isset($_REQUEST['fill'])) {
 	if ($_REQUEST['fill'] == '') {
 		$fill_alt = '#000';
 	} else {
-		$fill_alt = '#' . str_replace(array(' ', '#'), '', $_REQUEST['fill']);
+		$fill_alt = to_color($_REQUEST['fill']);
 	}
 } else if (isset($_REQUEST['fills'])) {
 	$fill = true;
@@ -152,7 +178,7 @@ if (isset($_REQUEST['fill'])) {
 	if ($_REQUEST['fills'] == '') {
 		$fill_alt = '#000';
 	} else {
-		$fill_alt = '#' . str_replace(array(' ', '#'), '', $_REQUEST['fills']);
+		$fill_alt = to_color($_REQUEST['fills']);
 	}
 }
 
@@ -186,24 +212,30 @@ switch ($generating) {
 		$width = round($dim * 1.5, 2);
 		$height = round($dim * 1.5, 2);
 		$offset_x = round($dim / 4, 2);
-		$offset_y = round($dim * 0.12, 2);
+		$offset_y = round($dim * 0.1, 2);
 		break;
 	default:  // GEN_LOGO
-		$width = round($dim * 5.74, 0);
-		$height = $dim;
+		$l = !$name ? 8 : strlen($name);
+		$width = round($dim * (1 + ($l * 0.593)), 0);
+		$height = in_string(array('g','j','q','y'), $name) ? $dim * 1.15 : $dim;
 		$offset_x += round($dim / 25, 0);
 }
 
 header('Content-type: image/svg+xml');
 header('Content-Disposition: inline; filename="' . basename(__FILE__, '.php') . '"');
 
-?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="<?= $width ?>" height="<?= $height ?>">
-	<defs>
+/* <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"> */
+?><svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="<?= $width ?>" height="<?= $height ?>">
 <?php
+
+if (isset($_REQUEST['pen']) && ($_REQUEST['pen'] != ''))
+	$pen_black = $pen_white = to_color($_REQUEST['pen']);
 
 if (!$nofill) {
 	if (!$solid) {
+
+		echo T.'<defs>'.N;
+
 		if (!$fill) {
 			$fill_red = 'url(#grad-red)';
 			$fill_green = 'url(#grad-green)';
@@ -217,32 +249,59 @@ if (!$nofill) {
 			echo lgr('grad-fill', brighter($fill_alt, 0.2), brighter($fill_alt, -0.3), 0.8);
 		}
 
+		echo T.'</defs>'.N;
+
 	} else {
+
 		if (!$fill) {
 			$fill_red = $pen_red;
 			$fill_green = $pen_green;
 			$fill_blue = $pen_blue;
 		} else
 			$fill_red = $fill_green = $fill_blue = $fill_alt;
+
 	}
+
 	$pen_red = $pen_green = $pen_blue = $pen_black;
 	$fill_red_alt = $pen_red_alt;
 	$fill_black_alt = $pen_black_alt;
 } else
 	$fill_red = $fill_green = $fill_blue = $fill_red_alt = $fill_black_alt = 'none';
 
-if ($inv) $pen_red = $pen_green = $pen_blue = $pen_white;
+if ($inv) $pen_red = $pen_green = $pen_blue = $pen_red_alt = $pen_white;
 
-if ($fill && ($generating == GEN_ICON))
-	$pen_red = $pen_green = $pen_blue = ($solid ? brighter($fill_alt, -0.2) : $fill_alt);
+// if ($fill && $generating == GEN_ICON)
+// 	$pen_red = $pen_green = $pen_blue = ($solid ? brighter($fill_alt, -0.2) : $fill_alt);
 
-$text_strk = $nofill ? $stroke_width : round($stroke_width/2, 2);
+if ($fill && $generating == GEN_LOGO) {
+	$fill_red_alt = $fill_red;
+	$pen_red_alt = $inv ? $pen_white : $pen_black;
+}
+
+$text_strk = ($nofill || $fill) ? $stroke_width : round($stroke_width/2, 2);
 
 // if ($nofill && ($generating == GEN_LOGO) && !$inv) $pen_red = $pen_green = $pen_blue = $pen_black;
 
-?>
-	</defs>
-<?php
+if (!$name)
+	switch ($generating) {
+		case GEN_LOGO:
+			$name = 'tec<tspan fill="' . $fill_black_alt .
+				'" stroke="' . $pen_black_alt .
+				'" stroke-width="' . $text_strk .
+				'">smith</tspan>';
+			break;
+		case GEN_AVATAR:
+			$name = 'tec<tspan fill="' . $pen_black_alt .
+				'">smith</tspan>';
+			break;
+	}
+
+$back = false;
+if (isset($_REQUEST['back']) && ($_REQUEST['back'] != '')) $back = to_color($_REQUEST['back']);
+
+/* ----- The actual drawing ----------------------------------------------- */
+
+if ($back !== false) echo T.'<rect width="'.$width.'" height="'.$width.'" fill="'.$back.'" />'.N;
 
 echo pth($cube[0], $pen_red, $stroke_width, $fill_red);
 echo pth($cube[2], $pen_green, $stroke_width, $fill_green);
@@ -251,9 +310,9 @@ echo pth($cube[1], $pen_blue, $stroke_width, $fill_blue);
 if ($generating == GEN_LOGO) {
 ?>
 	<text
-		x="<?= round(($width / 2) + ($dim / 2) + ($offset_x * 2), 4) ?>"
+		x="<?= round(($dim) + ($offset_x * 4), 4) ?>"
 		y="<?= round($dim * 0.92, 4) ?>"
-		text-anchor="middle"
+		text-anchor="left"
 		fill="<?= $fill_red_alt ?>"
 		fill-opacity="1"
 		stroke="<?= $pen_red_alt ?>"
@@ -261,23 +320,19 @@ if ($generating == GEN_LOGO) {
 		stroke-opacity="1"
 		font-size="<?= round($dim * 1.1, 0) ?>"
 		font-family="Ubuntu"
-		font-weight="bold">tec<tspan
-			fill="<?= $fill_black_alt ?>"
-			stroke="<?= $pen_black_alt ?>"
-			stroke-width="<?= $text_strk ?>">smith</tspan></text>
+		font-weight="bold"><?= $name ?></text>
 <?php
 } elseif ($generating == GEN_AVATAR) {
 ?>
 	<text
 		x="<?= round($width / 2, 0) ?>"
-		y="<?= round($height * 0.925, 2) ?>"
+		y="<?= round($height * 0.93, 2) ?>"
 		text-anchor="middle"
 		fill="<?= $pen_red_alt ?>"
 		fill-opacity="1"
 		font-size="<?= round($height * 0.23, 2) ?>"
 		font-family="Ubuntu"
-		font-weight="bold">tec<tspan
-			fill="<?= $pen_black_alt ?>">smith</tspan></text>
+		font-weight="bold"><?= $name ?></text>
 <?php
 }
 ?>
