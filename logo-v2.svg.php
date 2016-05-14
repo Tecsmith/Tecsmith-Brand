@@ -191,13 +191,6 @@ if ($size !== false) {
 }
 if ($size === false) $size = $dim;
 
-// Adjust cube
-foreach ($cube as $i => $co)
-	foreach ($co as $j => $pt) {
-		$cube[$i][$j][0] = ($cube[$i][$j][0] * $size);
-		$cube[$i][$j][1] = ($cube[$i][$j][1] * $size);
-	}
-
 // figure out dimentions
 $generating = GEN_LOGO;
 if ($icon) $generating = GEN_ICON;
@@ -205,14 +198,16 @@ elseif ($avatar) $generating = GEN_AVATAR;
 
 switch ($generating) {
 	case GEN_ICON:
-		$width = $dim;
-		$height = $dim;
+		$width = $height = $dim;
+		$size = round($size * (28/32), 0);
+		$offset_x = round($size * (2.25/32), 4);
+		$offset_y = round($size * (2.25/32), 4);
 		break;
 	case GEN_AVATAR:
-		$width = round($dim * 1.5, 2);
-		$height = round($dim * 1.5, 2);
-		$offset_x = round($dim / 4, 2);
-		$offset_y = round($dim * 0.1, 2);
+		$width = $height = $dim;
+		$size = round($size * (20/32), 0);
+		$offset_x = round($size * (9.55/32), 4);
+		$offset_y = round($size * (5/32), 4);
 		break;
 	default:  // GEN_LOGO
 		$l = !$name ? 8 : strlen($name);
@@ -220,6 +215,13 @@ switch ($generating) {
 		$height = in_string(array('g','j','q','y'), $name) ? $dim * 1.15 : $dim;
 		$offset_x += round($dim / 25, 0);
 }
+
+// Adjust cube
+foreach ($cube as $i => $co)
+	foreach ($co as $j => $pt) {
+		$cube[$i][$j][0] = ($cube[$i][$j][0] * $size);
+		$cube[$i][$j][1] = ($cube[$i][$j][1] * $size);
+	}
 
 header('Content-type: image/svg+xml');
 header('Content-Disposition: inline; filename="' . basename(__FILE__, '.php') . '"');
@@ -278,7 +280,10 @@ if ($fill && $generating == GEN_LOGO) {
 	$pen_red_alt = $inv ? $pen_white : $pen_black;
 }
 
-$text_strk = ($nofill || $fill) ? $stroke_width : round($stroke_width/2, 2);
+if ($generating == GEN_ICON) $stroke_width = round($stroke_width * (28/32), 4);
+elseif ($generating == GEN_AVATAR) $stroke_width = round($stroke_width * (20/32), 4);
+
+$text_strk = ($nofill || $fill) ? $stroke_width : round($stroke_width/2, 4);
 
 // if ($nofill && ($generating == GEN_LOGO) && !$inv) $pen_red = $pen_green = $pen_blue = $pen_black;
 
@@ -326,14 +331,27 @@ if ($generating == GEN_LOGO) {
 ?>
 	<text
 		x="<?= round($width / 2, 0) ?>"
-		y="<?= round($height * 0.93, 2) ?>"
+		y="<?= round($height * 0.9, 4) ?>"
 		text-anchor="middle"
 		fill="<?= $pen_red_alt ?>"
 		fill-opacity="1"
-		font-size="<?= round($height * 0.23, 2) ?>"
+		font-size="<?= round($height * 0.215, 4) ?>"
 		font-family="Ubuntu"
 		font-weight="bold"><?= $name ?></text>
 <?php
+
+	if ($guides) {
+		include_once('functions.php');
+		do_icon_guides($dim);
+	}
+
+} elseif ($generating == GEN_ICON) {
+
+	if ($guides) {
+		include_once('functions.php');
+		do_icon_guides($dim);
+	}
+
 }
 ?>
 </svg>

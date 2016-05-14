@@ -13,7 +13,7 @@
 			<stop offset="100%" style="stop-color: #00008c; stop-opacity: 0.8" />
 		</linearGradient>
 	</defs>
-	<path stroke="#000" stroke-width="36" fill="url(#grad-red)" d="M 512 444.6208 L 959.2832 224.8704 L 512 21.1968 L 64.7168 224.8704 Z" stroke-linecap="round" stroke-linejoin="round" />
-	<path stroke="#000" stroke-width="36" fill="url(#grad-green)" d="M 475.0336 509.44 L 19.8656 280.6784 L 67.7888 744.8576 L 478.6176 1001.2672 Z" stroke-linecap="round" stroke-linejoin="round" />
-	<path stroke="#000" stroke-width="36" fill="url(#grad-blue)" d="M 548.9664 509.44 L 1004.1344 280.6784 L 956.2112 744.8576 L 545.3824 1001.2672 Z" stroke-linecap="round" stroke-linejoin="round" />
+	<path stroke="#000" stroke-width="31.5" fill="url(#grad-red)" d="M 511 452.0432 L 902.3728 259.7616 L 511 81.5472 L 119.6272 259.7616 Z" stroke-linecap="round" stroke-linejoin="round" />
+	<path stroke="#000" stroke-width="31.5" fill="url(#grad-green)" d="M 478.6544 508.76 L 80.3824 308.5936 L 122.3152 714.7504 L 481.7904 939.1088 Z" stroke-linecap="round" stroke-linejoin="round" />
+	<path stroke="#000" stroke-width="31.5" fill="url(#grad-blue)" d="M 543.3456 508.76 L 941.6176 308.5936 L 899.6848 714.7504 L 540.2096 939.1088 Z" stroke-linecap="round" stroke-linejoin="round" />
 </svg>
